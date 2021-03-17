@@ -2,7 +2,7 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import MyAppBar from "./MyAppBar";
-//import BoardContent from "./BoardContent";
+import BoardContent from "./BoardContent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +34,7 @@ const Board: React.FC = () => {
         <MyAppBar />
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {/* <BoardContent /> */}
+          <BoardContent />
         </main>
       </div>
     </>
