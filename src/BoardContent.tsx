@@ -6,6 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import List from "./List";
+import { allLists, onDragEnded } from "./data";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -22,29 +23,51 @@ const useStyles = makeStyles((theme: Theme) => {
   });
 });
 
+const boardId = 1;
+
 const BoardContent: React.FC = () => {
+  const boardIdNumber = () => {
+    return parseInt("" + boardId, 10);
+  };
+
   const classes = useStyles();
   const handleDragEnded = (result: DropResult) => {
     //Container.onDragEnded(boardIdNumber(), result);
+    onDragEnded(boardId, result);
   };
   const handleAddButtonClicked = () => {
     //Container.onListAdded(boardIdNumber());
   };
 
   const renderLists = () => {
-    return (
-      <>
-        <List key={1} boardId={1} listId={1} listIndex={1} />
-        <List key={2} boardId={2} listId={2} listIndex={2} />
-        <List key={3} boardId={3} listId={3} listIndex={3} />
-      </>
-    );
+    const id = boardIdNumber();
+    const result = allLists
+      .filter((list) => list.boardId === id)
+      .sort((a, b) => a.index - b.index)
+      .map((list, listIndex) => {
+        if (!list.id) {
+          return <></>;
+        }
+        return (
+          <List
+            key={list.id}
+            boardId={id}
+            listId={list.id}
+            listIndex={listIndex}
+          />
+        );
+      });
+    return result;
   };
 
   return (
     <div className={classes.dragDropRoot}>
       <DragDropContext onDragEnd={handleDragEnded}>
-        <Droppable droppableId={"1"} direction="horizontal" type="List">
+        <Droppable
+          droppableId={`${boardId}`}
+          direction="horizontal"
+          type="List"
+        >
           {(provided) => (
             <div
               className={classes.container}

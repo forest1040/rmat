@@ -8,6 +8,7 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 //import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
+import { allCards } from "./data";
 
 interface Props {
   boardId: number;
@@ -73,42 +74,24 @@ const List: React.FC<Props> = (props) => {
   };
 
   const renderCards = () => {
-    // const result = Container.allCards
-    //   .filter((card) => card.listId === listId)
-    //   .sort((a, b) => a.index - b.index)
-    //   .map((card, cardIndex) => {
-    //     if (!card.id) {
-    //       return <></>;
-    //     }
-    //     return (
-    //       <Card
-    //         key={card.id}
-    //         boardId={boardId}
-    //         cardId={card.id}
-    //         cardIndex={cardIndex}
-    //         onClicked={setIsDragDisabled}
-    //       />
-    //     );
-    //   });
-    // return result;
-    return (
-      <>
-        <Card
-          key={1}
-          boardId={1}
-          cardId={1}
-          cardIndex={1}
-          onClicked={setIsDragDisabled}
-        />
-        <Card
-          key={2}
-          boardId={2}
-          cardId={2}
-          cardIndex={2}
-          onClicked={setIsDragDisabled}
-        />
-      </>
-    );
+    const result = allCards
+      .filter((card) => card.listId === listId)
+      .sort((a, b) => a.index - b.index)
+      .map((card, cardIndex) => {
+        if (!card.id) {
+          return <></>;
+        }
+        return (
+          <Card
+            key={card.id}
+            boardId={boardId}
+            cardId={card.id}
+            cardIndex={cardIndex}
+            onClicked={setIsDragDisabled}
+          />
+        );
+      });
+    return result;
   };
 
   return (
