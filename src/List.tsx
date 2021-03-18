@@ -8,7 +8,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-//import ListTitleArea from "./ListTitleArea";
+import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
 import { allCards } from "./data";
 
@@ -116,7 +116,7 @@ const List: React.FC<Props> = (props) => {
           innerRef={provided.innerRef}
           className={classes.paper}
         >
-          {/* <ListTitleArea boardId={boardId} listId={listId} /> */}
+          <ListTitleArea boardId={boardId} listId={listId} />
           <Droppable droppableId={`listId-${listId}`} type="Card">
             {(cardProvided) => (
               <div
