@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { grey } from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
@@ -6,6 +7,7 @@ import Fab from "@material-ui/core/Fab";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 //import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
 import { allCards } from "./data";
@@ -41,6 +43,8 @@ const List: React.FC<Props> = (props) => {
   const isInitialMount = useRef(true);
   const classes = useStyles();
 
+  const history = useHistory();
+
   const { boardId, listId, listIndex } = props;
 
   //const Container = State.useContainer();
@@ -67,6 +71,11 @@ const List: React.FC<Props> = (props) => {
 
   const onAddButtonClicked = () => {
     //Container.onCardAdded(boardId, listId);
+  };
+
+  const onEditButtonClicked = () => {
+    //Container.onCardAdded(boardId, listId);
+    history.push("/edit");
   };
 
   const onDeleteButtonClicked = () => {
@@ -129,6 +138,15 @@ const List: React.FC<Props> = (props) => {
               onClick={onAddButtonClicked}
             >
               <AddIcon />
+            </Fab>
+            <Fab
+              variant="extended"
+              size="medium"
+              color="primary"
+              aria-label="Edit List"
+              onClick={onEditButtonClicked}
+            >
+              <EditIcon />
             </Fab>
             <Fab
               variant="extended"

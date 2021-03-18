@@ -13,6 +13,7 @@ import "./App.css";
 import Home from "./Home";
 import BoardList from "./BoardList";
 import Board from "./Board";
+import TextEdit from "./TextEdit";
 
 // 独自のテーマを作成する
 const theme = createMuiTheme({
@@ -53,6 +54,7 @@ const App: React.FC = () => {
           <Route path="/" exact component={Home} />
           <Route path="/boards" component={BoardList} />
           <Route path="/board" component={Board} />
+          <Route path="/edit" component={TextEdit} />
           <Redirect to="/" />
         </Switch>
       </Router>
