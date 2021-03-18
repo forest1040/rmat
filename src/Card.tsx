@@ -14,8 +14,8 @@ import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 //import State from "../State";
 //import "highlight.js/styles/default.css";
-
-import { CardTable } from "./data";
+import { allCards } from "./data";
+//import { CardTable } from "./data";
 
 interface Props {
   boardId: number;
@@ -72,10 +72,11 @@ const Card: React.FC<Props> = (props) => {
   const isInputArea = false;
 
   //const card = Container.allCards.find((cardData) => cardData.id === cardId);
-  const card = { id: 0, listId: 0, index: 0, text: "cardA" };
-  const cardText = card?.text || "";
+  //const card = { id: 0, listId: 0, index: 0, text: "cardA" };
+  const card = allCards.find((cardData) => cardData.id === cardId);
+  const text = card?.text || "";
   // const [text, setValue] = useState(cardText);
-  const text = "aaaaaa";
+  //const text = "aaaaaa";
 
   const editorColor = "vs";
 
@@ -140,6 +141,7 @@ const Card: React.FC<Props> = (props) => {
                   onClick={handleIsInputAreaChange}
                 >
                   {/* {processor.processSync(text).contents} */}
+                  {text}
                 </div>
               </CardContent>
             </MaterialCard>

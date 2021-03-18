@@ -34,9 +34,10 @@ export const allCards: Cards = [
   { id: 1, listId: 1, index: 1, text: "CARD AAA 1" },
   { id: 2, listId: 1, index: 2, text: "CARD AAA 2" },
   { id: 3, listId: 2, index: 1, text: "CARD BBB 1" },
-  { id: 4, listId: 2, index: 2, text: "CARD BBB 2" },
+  //{ id: 4, listId: 2, index: 2, text: "CARD BBB 2" },
   { id: 5, listId: 3, index: 1, text: "CARD CCC 1" },
   { id: 6, listId: 3, index: 2, text: "CARD CCC 2" },
+  { id: 7, listId: 3, index: 3, text: "CARD CCC 3" },
 ];
 
 const swapLists = (
@@ -78,8 +79,20 @@ const swapLists = (
     //   }
     //   indexOfRange += 1;
     // }
-
     // Promise.all(promiseArray).then(() => onListTableUpdateCompleted(boardId));
+
+    let indexOfRange = 0;
+    for (let index = lowerIndex; index <= upperIndex; index += 1) {
+      range[indexOfRange].index = index;
+      const { id } = range[indexOfRange];
+      if (id) {
+        const found = allLists.find((l) => l.id === id);
+        if (found) {
+          found.index = index;
+        }
+      }
+      indexOfRange += 1;
+    }
   }
 };
 
@@ -123,8 +136,20 @@ const swapCardsInTheSameList = (
     //   }
     //   indexOfRange += 1;
     // }
-
     // Promise.all(promiseArray).then(() => onCardTableUpdateCompleted(boardId));
+
+    let indexOfRange = 0;
+    for (let index = lowerIndex; index <= upperIndex; index += 1) {
+      range[indexOfRange].index = index;
+      const { id } = range[indexOfRange];
+      if (id) {
+        const found = allCards.find((c) => c.id === id);
+        if (found) {
+          found.index = index;
+        }
+      }
+      indexOfRange += 1;
+    }
   }
 };
 
@@ -198,6 +223,53 @@ const swapCardsInDifferentList = (
 
   // Promise.all(promiseArray).then(() => onCardTableUpdateCompleted(boardId));
   // }
+
+  if (dragCard) {
+    sourceRange.splice(0, 1);
+    destinationRange.splice(0, 0, dragCard);
+
+    let index = sourceIndex;
+    const promiseArray: Promise<number>[] = [];
+    for (
+      let indexOfRange = 0;
+      indexOfRange < sourceRange.length;
+      indexOfRange += 1
+    ) {
+      sourceRange[indexOfRange].index = index;
+      const { id } = sourceRange[indexOfRange];
+      if (id) {
+        const found = allCards.find((c) => c.id === id);
+        if (found) {
+          found.index = index;
+        }
+      }
+      index += 1;
+    }
+
+    index = destinationIndex;
+    for (
+      let indexOfRange = 0;
+      indexOfRange < destinationRange.length;
+      indexOfRange += 1
+    ) {
+      destinationRange[indexOfRange].index = index;
+      const { id } = destinationRange[indexOfRange];
+      if (id && index === destinationIndex) {
+        destinationRange[indexOfRange].listId = destinationId;
+        const found = allCards.find((c) => c.id === id);
+        if (found) {
+          found.listId = destinationId;
+          found.index = index;
+        }
+      } else if (id) {
+        const found = allCards.find((c) => c.id === id);
+        if (found) {
+          found.index = index;
+        }
+      }
+      index += 1;
+    }
+  }
 };
 
 const swapCards = (
