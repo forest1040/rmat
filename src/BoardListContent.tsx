@@ -39,7 +39,6 @@ const BoardListContent: React.FC = () => {
           onClick={handleAddButtonClicked}
         >
           <AddIcon />
-          ADD NEW BOARD
         </Fab>
       </div>
     </Paper>

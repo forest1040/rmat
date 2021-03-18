@@ -25,12 +25,13 @@ const useStyles = makeStyles(() => {
       margin: "16px",
     },
     container: {
-      paddingBottom: "40px",
+      paddingBottom: "5px",
     },
     buttonArea: {
       display: "flex",
       justifyContent: "space-around",
-      marginTop: "16px",
+      //marginTop: "4px",
+      marginBottom: "10px",
     },
   });
 });
@@ -123,28 +124,6 @@ const List: React.FC<Props> = (props) => {
           innerRef={provided.innerRef}
           className={classes.paper}
         >
-          <div className={classes.buttonArea}>
-            <Fab
-              variant="extended"
-              size="medium"
-              color="primary"
-              aria-label="Add new card"
-              onClick={onAddButtonClicked}
-            >
-              <AddIcon />
-              ADD NEW CARD
-            </Fab>
-            <Fab
-              variant="extended"
-              size="medium"
-              color="secondary"
-              aria-label="Delete this list"
-              onClick={onDeleteButtonClicked}
-            >
-              <DeleteIcon />
-              DELETE THIS LIST
-            </Fab>
-          </div>
           {/* <ListTitleArea boardId={boardId} listId={listId} /> */}
           <Droppable droppableId={`listId-${listId}`} type="Card">
             {(cardProvided) => (
@@ -158,6 +137,26 @@ const List: React.FC<Props> = (props) => {
               </div>
             )}
           </Droppable>
+          <div className={classes.buttonArea}>
+            <Fab
+              variant="extended"
+              size="medium"
+              color="primary"
+              aria-label="Add new card"
+              onClick={onAddButtonClicked}
+            >
+              <AddIcon />
+            </Fab>
+            <Fab
+              variant="extended"
+              size="medium"
+              color="secondary"
+              aria-label="Delete this list"
+              onClick={onDeleteButtonClicked}
+            >
+              <DeleteIcon />
+            </Fab>
+          </div>
         </Paper>
       )}
     </Draggable>

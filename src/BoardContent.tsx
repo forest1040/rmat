@@ -66,7 +66,6 @@ const BoardContent: React.FC = () => {
           onClick={handleAddButtonClicked}
         >
           <AddIcon />
-          ADD NEW LIST
         </Fab>
       </div>
     </div>

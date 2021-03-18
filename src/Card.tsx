@@ -113,7 +113,6 @@ const Card: React.FC<Props> = (props) => {
               onClick={handleIsInputAreaChange}
             >
               <CheckIcon />
-              DONE
             </Fab>
             <Fab
               variant="extended"
@@ -123,7 +122,6 @@ const Card: React.FC<Props> = (props) => {
               onClick={handleDeleteButtonClicked}
             >
               <DeleteIcon />
-              DELETE THIS CARD
             </Fab>
           </div>
         </>
