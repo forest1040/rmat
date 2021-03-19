@@ -10,7 +10,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
-import { allCards } from "../model/data";
+//import { allCards } from "../model/data";
+import useStore from "../state";
+import DB, { CardTable } from "../db";
 
 interface Props {
   boardId: number;
@@ -40,6 +42,7 @@ const useStyles = makeStyles(() => {
 });
 
 const List: React.FC<Props> = (props) => {
+  const store = useStore();
   const isInitialMount = useRef(true);
   const classes = useStyles();
 
@@ -48,42 +51,45 @@ const List: React.FC<Props> = (props) => {
   const { boardId, listId, listIndex } = props;
 
   //const Container = State.useContainer();
-  //const [cards, setCards] = useState<CardTable[]>([]);
+  const [cards, setCards] = useState<CardTable[]>([]);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
 
-  //   useEffect(() => {
-  //     if (isInitialMount.current) {
-  //       isInitialMount.current = false;
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
 
-  //       DB.cardTable
-  //         .where("listId")
-  //         .equals(listId)
-  //         .sortBy("index")
-  //         .then((data) => setCards(data))
-  //         .catch((err) => {
-  //           throw err;
-  //         });
-  //     } else {
-  //       const updatedTimestamp = Date.now();
-  //       DB.boardTable.update(boardId, { updatedTimestamp });
-  //     }
-  //   }, [cards]);
+      DB.cardTable
+        .where("listId")
+        .equals(listId)
+        .sortBy("index")
+        .then((data) => setCards(data))
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  }, [cards]);
 
   const onAddButtonClicked = () => {
     //Container.onCardAdded(boardId, listId);
+    store.onCardAdded(boardId, listId);
   };
 
   const onEditButtonClicked = () => {
     //Container.onCardAdded(boardId, listId);
+    store.onCardAdded(boardId, listId);
     history.push("/edit");
   };
 
   const onDeleteButtonClicked = () => {
     //Container.onListDeleted(boardId, listId);
+    store.onListDeleted(boardId, listId);
   };
 
   const renderCards = () => {
-    const result = allCards
+    const result = store.allCards
       .filter((card) => card.listId === listId)
       .sort((a, b) => a.index - b.index)
       .map((card, cardIndex) => {

@@ -1,12 +1,12 @@
 import React from "react";
-//import CssBaseline from "@material-ui/core/CssBaseline";
-import { Paper, Fab } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import List from "./List";
-import { allLists, onDragEnded } from "../model/data";
+//import { allLists, onDragEnded } from "../model/data";
+import useStore from "../state";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => {
 const boardId = 1;
 
 const BoardContent: React.FC = () => {
+  const store = useStore();
   const boardIdNumber = () => {
     return parseInt("" + boardId, 10);
   };
@@ -34,15 +35,16 @@ const BoardContent: React.FC = () => {
   const classes = useStyles();
   const handleDragEnded = (result: DropResult) => {
     //Container.onDragEnded(boardIdNumber(), result);
-    onDragEnded(boardId, result);
+    store.onDragEnded(boardId, result);
   };
   const handleAddButtonClicked = () => {
     //Container.onListAdded(boardIdNumber());
+    store.onListAdded(boardIdNumber());
   };
 
   const renderLists = () => {
     const id = boardIdNumber();
-    const result = allLists
+    const result = store.allLists
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {

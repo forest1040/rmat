@@ -4,10 +4,9 @@ import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import Typography from "@material-ui/core/Typography";
-//import State from "../State";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { allLists } from "../model/data";
-import classes from "*.module.css";
+import useStore from "../state";
 
 interface Props {
   boardId: number;
@@ -50,6 +49,7 @@ const useStyles = makeStyles(() => {
 });
 
 const ListTitleArea: React.FC<Props> = (props) => {
+  const store = useStore();
   const { boardId, listId } = props;
   const classes = useStyles();
 
@@ -62,6 +62,7 @@ const ListTitleArea: React.FC<Props> = (props) => {
 
   const handleisInputAreaChange = () => {
     //Container.onListTitleChanged(boardId, listId, title);
+    store.onListTitleChanged(boardId, listId, title);
     setIsInputArea(!isInputArea);
   };
 

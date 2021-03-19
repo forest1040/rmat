@@ -1,25 +1,26 @@
 import { DropResult } from "react-beautiful-dnd";
+import { BoardTable, ListTable, CardTable } from "../db";
 
-export interface BoardTable {
-  id?: number;
-  createdTimestamp: number;
-  title: string;
-  updatedTimestamp: number;
-}
+// export interface BoardTable {
+//   id?: number;
+//   createdTimestamp: number;
+//   title: string;
+//   updatedTimestamp: number;
+// }
 
-export interface ListTable {
-  id?: number;
-  boardId: number;
-  index: number;
-  title: string;
-}
+// export interface ListTable {
+//   id?: number;
+//   boardId: number;
+//   index: number;
+//   title: string;
+// }
 
-export interface CardTable {
-  id?: number;
-  listId: number;
-  index: number;
-  text: string;
-}
+// export interface CardTable {
+//   id?: number;
+//   listId: number;
+//   index: number;
+//   text: string;
+// }
 
 export type Lists = ListTable[];
 //const allLists = <Lists>[];
