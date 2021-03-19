@@ -116,7 +116,6 @@ const ListTitleArea: React.FC<Props> = (props) => {
             onClick={handleisInputAreaChange}
           >
             <CheckIcon />
-            DONE
           </Fab>
         </div>
       )}

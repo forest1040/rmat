@@ -117,10 +117,10 @@ const useStyles = makeStyles((theme: Theme) =>
 //   );
 // };
 
-export interface GenericTemplateProps {
-  children: React.ReactNode;
-  title: string;
-}
+// export interface GenericTemplateProps {
+//   children: React.ReactNode;
+//   title: string;
+// }
 
 const MyAppBar: React.FC = () => {
   const classes = useStyles();

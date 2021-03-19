@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => {
   });
 });
 
+// TODO: boardIdの採番
 const boardId = 1;
 
 const BoardContent: React.FC = () => {

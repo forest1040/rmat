@@ -68,15 +68,14 @@ const Card: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   //const Container = State.useContainer();
-  //const [isInputArea, setIsInputArea] = useState(false);
-  const isInputArea = false;
+  const [isInputArea, setIsInputArea] = useState(false);
+  //const isInputArea = false;
 
   //const card = Container.allCards.find((cardData) => cardData.id === cardId);
   //const card = { id: 0, listId: 0, index: 0, text: "cardA" };
   const card = allCards.find((cardData) => cardData.id === cardId);
-  const text = card?.text || "";
-  // const [text, setValue] = useState(cardText);
-  //const text = "aaaaaa";
+  const cardText = card?.text || "";
+  const [text, setValue] = useState(cardText);
 
   const editorColor = "vs";
 
@@ -89,11 +88,11 @@ const Card: React.FC<Props> = (props) => {
     if (isInputArea) {
       //Container.onCardTextChanged(boardId, cardId, text);
     }
-    //setIsInputArea(!isInputArea);
+    setIsInputArea(!isInputArea);
   };
 
   const handleValueChanged = (value: string) => {
-    //setValue(value);
+    setValue(value);
   };
 
   const handleDeleteButtonClicked = () => {
