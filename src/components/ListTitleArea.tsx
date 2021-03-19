@@ -6,7 +6,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import Typography from "@material-ui/core/Typography";
 //import State from "../State";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { allLists } from "./data";
+import { allLists } from "../model/data";
 import classes from "*.module.css";
 
 interface Props {

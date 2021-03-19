@@ -2,7 +2,7 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import MyAppBar from "./MyAppBar";
-import BoardListContent from "./BoardListContent";
+import BoardListContent from "./components/BoardListContent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

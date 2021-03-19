@@ -10,7 +10,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
-import { allCards } from "./data";
+import { allCards } from "../model/data";
 
 interface Props {
   boardId: number;

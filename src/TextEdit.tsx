@@ -2,7 +2,7 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import MyAppBar from "./MyAppBar";
-import TextEditContent from "./TextEditContent";
+import TextEditContent from "./components/TextEditContent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

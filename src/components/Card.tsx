@@ -14,7 +14,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 //import State from "../State";
 //import "highlight.js/styles/default.css";
-import { allCards } from "./data";
+import { allCards } from "../model/data";
 //import { CardTable } from "./data";
 
 interface Props {

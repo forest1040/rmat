@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import List from "./List";
-import { allLists, onDragEnded } from "./data";
+import { allLists, onDragEnded } from "../model/data";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
