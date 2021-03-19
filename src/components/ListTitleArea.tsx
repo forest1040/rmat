@@ -5,7 +5,7 @@ import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { allLists } from "../model/data";
+//import { allLists } from "../model/data";
 import useStore from "../state";
 
 interface Props {
@@ -56,7 +56,7 @@ const ListTitleArea: React.FC<Props> = (props) => {
   //const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
-  const list = allLists.find((listData) => listData.id === listId);
+  const list = store.allLists.find((listData) => listData.id === listId);
   const ListTitle = list?.title || "";
   const [title, setTitle] = useState(ListTitle);
 

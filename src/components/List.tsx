@@ -78,8 +78,6 @@ const List: React.FC<Props> = (props) => {
   };
 
   const onEditButtonClicked = () => {
-    //Container.onCardAdded(boardId, listId);
-    store.onCardAdded(boardId, listId);
     history.push("/edit");
   };
 

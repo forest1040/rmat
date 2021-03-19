@@ -105,7 +105,12 @@ const Card: React.FC<Props> = (props) => {
     <>
       {isInputArea ? (
         <>
-          <TextField id="standard-basic" label="Standard" value={text} />
+          <TextField
+            id="standard-basic"
+            label="Standard"
+            value={text}
+            onChange={(event) => handleValueChanged(event.target.value)}
+          />
           <div className={classes.styledButtonArea}>
             <Fab
               variant="extended"
