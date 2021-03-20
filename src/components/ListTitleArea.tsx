@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-//import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-//import { allLists } from "../model/data";
-//import useStore from "../state";
-import State from "../state";
+//import State from "../state";
+import { useRecoilState } from "recoil";
+import { listState } from "../state/model";
+import DB from "../db";
 
 interface Props {
   boardId: number;
@@ -51,20 +51,56 @@ const useStyles = makeStyles(() => {
 
 const ListTitleArea: React.FC<Props> = (props) => {
   //const store = useStore();
-  const Container = State.useContainer();
+  //const Container = State.useContainer();
   const { boardId, listId } = props;
   const classes = useStyles();
 
   const [isInputArea, setIsInputArea] = useState(false);
 
   //const list = store.allLists.find((listData) => listData.id === listId);
-  const list = Container.allLists.find((listData) => listData.id === listId);
+  //const lists = useRecoilValue(listState);
+  const [lists, setLists] = useRecoilState(listState);
+
+  const list = lists.find((listData) => listData.id === listId);
   const ListTitle = list?.title || "";
   const [title, setTitle] = useState(ListTitle);
 
+  const OnListTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
+    //const setListState = useSetRecoilState(listState);
+    DB.listTable
+      .toArray()
+      .then((lists) => {
+        setLists(lists);
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const onListTitleChanged = (
+    boardId: number,
+    listId: number,
+    title: string
+  ) => {
+    DB.listTable
+      .update(listId, { title })
+      .then(() => OnListTableUpdateCompleted(boardId))
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   const handleisInputAreaChange = () => {
-    Container.onListTitleChanged(boardId, listId, title);
+    //Container.onListTitleChanged(boardId, listId, title);
     //store.onListTitleChanged(boardId, listId, title);
+    onListTitleChanged(boardId, listId, title);
     setIsInputArea(!isInputArea);
   };
 

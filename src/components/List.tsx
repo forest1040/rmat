@@ -10,11 +10,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
-//import { allCards } from "../model/data";
-//import useStore from "../state";
-import State from "../state";
-
-import DB, { CardTable } from "../db";
+//import State from "../state";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { listState, cardState } from "../state/model";
+import DB from "../db";
 
 interface Props {
   boardId: number;
@@ -45,7 +44,7 @@ const useStyles = makeStyles(() => {
 
 const List: React.FC<Props> = (props) => {
   //const store = useStore();
-  const Container = State.useContainer();
+  //const Container = State.useContainer();
 
   const isInitialMount = useRef(true);
   const classes = useStyles();
@@ -54,7 +53,10 @@ const List: React.FC<Props> = (props) => {
 
   const { boardId, listId, listIndex } = props;
 
-  const [cards, setCards] = useState<CardTable[]>([]);
+  const [lists, setLists] = useRecoilState(listState);
+  //const [cards, setCards] = useState<CardTable[]>([]);
+  const [cards, setCards] = useRecoilState(cardState);
+  //const cards = useRecoilValue(allCards);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
 
   useEffect(() => {
@@ -75,9 +77,101 @@ const List: React.FC<Props> = (props) => {
     }
   }, [cards]);
 
+  const OnListTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
+    DB.listTable
+      .toArray()
+      .then((lists) => {
+        setLists(lists);
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const OnCardTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
+    DB.cardTable
+      .toArray()
+      .then((cards) => {
+        setCards(cards);
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const OnCardAdded = (boardId: number, listId: number) => {
+    //const cards = useRecoilValue(allCards);
+    cards
+      .filter((card) => card.listId === listId)
+      .forEach((card) => {
+        if (!card.id) {
+          return;
+        }
+        DB.cardTable.update(card.id, {
+          index: card.index + 1,
+        });
+      });
+    DB.cardTable
+      .add({
+        listId,
+        index: 0,
+        text: "",
+      })
+      .then(() => OnCardTableUpdateCompleted(boardId))
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const OnListDeleted = (boardId: number, listId: number) => {
+    const cardPromiseArray: Promise<void>[] = [];
+    //const cards = useRecoilValue(allCards);
+    cards
+      .filter((card) => card.listId === listId)
+      .forEach((card) => {
+        if (card.id) {
+          cardPromiseArray.push(
+            DB.cardTable.delete(card.id).catch((err) => {
+              throw err;
+            })
+          );
+        }
+      });
+
+    Promise.all(cardPromiseArray)
+      .then(() => {
+        OnCardTableUpdateCompleted(boardId, true);
+
+        DB.listTable
+          .delete(listId)
+          .then(() => OnListTableUpdateCompleted(boardId))
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   const onAddButtonClicked = () => {
-    Container.onCardAdded(boardId, listId);
-    //store.onCardAdded(boardId, listId);
+    //Container.OnCardAdded(boardId, listId);
+    //store.OnCardAdded(boardId, listId);
+    OnCardAdded(boardId, listId);
   };
 
   const onEditButtonClicked = () => {
@@ -85,13 +179,15 @@ const List: React.FC<Props> = (props) => {
   };
 
   const onDeleteButtonClicked = () => {
-    Container.onListDeleted(boardId, listId);
-    //store.onListDeleted(boardId, listId);
+    //Container.OnListDeleted(boardId, listId);
+    //store.OnListDeleted(boardId, listId);
+    OnListDeleted(boardId, listId);
   };
 
-  const renderCards = () => {
+  const RenderCards = () => {
     //const result = store.allCards
-    const result = Container.allCards
+    const cards = useRecoilValue(cardState);
+    const result = cards
       .filter((card) => card.listId === listId)
       .sort((a, b) => a.index - b.index)
       .map((card, cardIndex) => {
@@ -132,7 +228,7 @@ const List: React.FC<Props> = (props) => {
                 {...cardProvided.droppableProps}
                 ref={cardProvided.innerRef}
               >
-                {renderCards()}
+                {RenderCards()}
                 {cardProvided.placeholder}
               </div>
             )}

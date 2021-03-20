@@ -12,12 +12,12 @@ import Fab from "@material-ui/core/Fab";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
-//import State from "../State";
 //import "highlight.js/styles/default.css";
+import { useRecoilState } from "recoil";
+import DB from "../db";
 
-//import { allCards } from "../model/data";
-//import useStore from "../state";
-import State from "../state";
+//import State from "../state";
+import { cardState } from "../state/model";
 
 interface Props {
   boardId: number;
@@ -67,14 +67,17 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const Card: React.FC<Props> = (props) => {
   //const store = useStore();
-  const Container = State.useContainer();
+  //const Container = State.useContainer();
   const { boardId, cardId, cardIndex } = props;
   const classes = useStyles();
 
   //const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
-  const card = Container.allCards.find((cardData) => cardData.id === cardId);
+  //const cards = useRecoilValue(cardState);
+  const [cards, setCards] = useRecoilState(cardState);
+
+  const card = cards.find((cardData) => cardData.id === cardId);
   //const card = store.allCards.find((cardData) => cardData.id === cardId);
   const cardText = card?.text || "";
   const [text, setValue] = useState(cardText);
@@ -86,10 +89,47 @@ const Card: React.FC<Props> = (props) => {
     onClicked(isInputArea);
   }, [isInputArea]);
 
+  const OnCardTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
+    DB.cardTable
+      .toArray()
+      .then((cards) => {
+        setCards(cards);
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const onCardDeleted = (boardId: number, cardId: number) => {
+    DB.cardTable
+      .delete(cardId)
+      .then(() => OnCardTableUpdateCompleted(boardId))
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
+    DB.cardTable
+      .update(cardId, { text })
+      .then(() => OnCardTableUpdateCompleted(boardId))
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   const handleIsInputAreaChange = () => {
     if (isInputArea) {
-      Container.onCardTextChanged(boardId, cardId, text);
+      //Container.onCardTextChanged(boardId, cardId, text);
       //store.onCardTextChanged(boardId, cardId, text);
+      onCardTextChanged(boardId, cardId, text);
     }
     setIsInputArea(!isInputArea);
   };
@@ -99,8 +139,9 @@ const Card: React.FC<Props> = (props) => {
   };
 
   const handleDeleteButtonClicked = () => {
-    Container.onCardDeleted(boardId, cardId);
+    //Container.onCardDeleted(boardId, cardId);
     //store.onCardDeleted(boardId, cardId);
+    onCardDeleted(boardId, cardId);
   };
 
   return (
