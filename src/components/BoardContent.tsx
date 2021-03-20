@@ -48,6 +48,8 @@ const BoardContent: React.FC = () => {
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
+        console.log("list.id:" + list.id);
+        console.log("listIndex:" + listIndex);
         if (!list.id) {
           return <></>;
         }
