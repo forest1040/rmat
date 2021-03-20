@@ -6,7 +6,8 @@ import CheckIcon from "@material-ui/icons/Check";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 //import { allLists } from "../model/data";
-import useStore from "../state";
+//import useStore from "../state";
+import State from "../state";
 
 interface Props {
   boardId: number;
@@ -49,20 +50,21 @@ const useStyles = makeStyles(() => {
 });
 
 const ListTitleArea: React.FC<Props> = (props) => {
-  const store = useStore();
+  //const store = useStore();
+  const Container = State.useContainer();
   const { boardId, listId } = props;
   const classes = useStyles();
 
-  //const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
-  const list = store.allLists.find((listData) => listData.id === listId);
+  //const list = store.allLists.find((listData) => listData.id === listId);
+  const list = Container.allLists.find((listData) => listData.id === listId);
   const ListTitle = list?.title || "";
   const [title, setTitle] = useState(ListTitle);
 
   const handleisInputAreaChange = () => {
-    //Container.onListTitleChanged(boardId, listId, title);
-    store.onListTitleChanged(boardId, listId, title);
+    Container.onListTitleChanged(boardId, listId, title);
+    //store.onListTitleChanged(boardId, listId, title);
     setIsInputArea(!isInputArea);
   };
 

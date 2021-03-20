@@ -6,7 +6,8 @@ import AddIcon from "@material-ui/icons/Add";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import List from "./List";
 //import { allLists, onDragEnded } from "../model/data";
-import useStore from "../state";
+//import useStore from "../state";
+import State from "../state";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -27,24 +28,27 @@ const useStyles = makeStyles((theme: Theme) => {
 const boardId = 1;
 
 const BoardContent: React.FC = () => {
-  const store = useStore();
+  //const store = useStore();
+  const Container = State.useContainer();
+
   const boardIdNumber = () => {
     return parseInt("" + boardId, 10);
   };
 
   const classes = useStyles();
   const handleDragEnded = (result: DropResult) => {
-    //Container.onDragEnded(boardIdNumber(), result);
-    store.onDragEnded(boardId, result);
+    Container.onDragEnded(boardIdNumber(), result);
+    //store.onDragEnded(boardId, result);
   };
   const handleAddButtonClicked = () => {
-    //Container.onListAdded(boardIdNumber());
-    store.onListAdded(boardIdNumber());
+    Container.onListAdded(boardIdNumber());
+    //store.onListAdded(boardIdNumber());
   };
 
   const renderLists = () => {
     const id = boardIdNumber();
-    const result = store.allLists
+    //const result = store.allLists
+    const result = Container.allLists
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {

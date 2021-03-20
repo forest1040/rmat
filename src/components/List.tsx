@@ -11,7 +11,9 @@ import EditIcon from "@material-ui/icons/Edit";
 import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
 //import { allCards } from "../model/data";
-import useStore from "../state";
+//import useStore from "../state";
+import State from "../state";
+
 import DB, { CardTable } from "../db";
 
 interface Props {
@@ -42,7 +44,9 @@ const useStyles = makeStyles(() => {
 });
 
 const List: React.FC<Props> = (props) => {
-  const store = useStore();
+  //const store = useStore();
+  const Container = State.useContainer();
+
   const isInitialMount = useRef(true);
   const classes = useStyles();
 
@@ -50,7 +54,6 @@ const List: React.FC<Props> = (props) => {
 
   const { boardId, listId, listIndex } = props;
 
-  //const Container = State.useContainer();
   const [cards, setCards] = useState<CardTable[]>([]);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
 
@@ -73,8 +76,8 @@ const List: React.FC<Props> = (props) => {
   }, [cards]);
 
   const onAddButtonClicked = () => {
-    //Container.onCardAdded(boardId, listId);
-    store.onCardAdded(boardId, listId);
+    Container.onCardAdded(boardId, listId);
+    //store.onCardAdded(boardId, listId);
   };
 
   const onEditButtonClicked = () => {
@@ -82,12 +85,13 @@ const List: React.FC<Props> = (props) => {
   };
 
   const onDeleteButtonClicked = () => {
-    //Container.onListDeleted(boardId, listId);
-    store.onListDeleted(boardId, listId);
+    Container.onListDeleted(boardId, listId);
+    //store.onListDeleted(boardId, listId);
   };
 
   const renderCards = () => {
-    const result = store.allCards
+    //const result = store.allCards
+    const result = Container.allCards
       .filter((card) => card.listId === listId)
       .sort((a, b) => a.index - b.index)
       .map((card, cardIndex) => {

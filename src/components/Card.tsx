@@ -16,7 +16,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 //import "highlight.js/styles/default.css";
 
 //import { allCards } from "../model/data";
-import useStore from "../state";
+//import useStore from "../state";
+import State from "../state";
 
 interface Props {
   boardId: number;
@@ -65,15 +66,16 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 const Card: React.FC<Props> = (props) => {
-  const store = useStore();
+  //const store = useStore();
+  const Container = State.useContainer();
   const { boardId, cardId, cardIndex } = props;
   const classes = useStyles();
 
   //const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
-  //const card = Container.allCards.find((cardData) => cardData.id === cardId);
-  const card = store.allCards.find((cardData) => cardData.id === cardId);
+  const card = Container.allCards.find((cardData) => cardData.id === cardId);
+  //const card = store.allCards.find((cardData) => cardData.id === cardId);
   const cardText = card?.text || "";
   const [text, setValue] = useState(cardText);
 
@@ -86,8 +88,8 @@ const Card: React.FC<Props> = (props) => {
 
   const handleIsInputAreaChange = () => {
     if (isInputArea) {
-      //Container.onCardTextChanged(boardId, cardId, text);
-      store.onCardTextChanged(boardId, cardId, text);
+      Container.onCardTextChanged(boardId, cardId, text);
+      //store.onCardTextChanged(boardId, cardId, text);
     }
     setIsInputArea(!isInputArea);
   };
@@ -97,8 +99,8 @@ const Card: React.FC<Props> = (props) => {
   };
 
   const handleDeleteButtonClicked = () => {
-    //Container.onCardDeleted(boardId, cardId);
-    store.onCardDeleted(boardId, cardId);
+    Container.onCardDeleted(boardId, cardId);
+    //store.onCardDeleted(boardId, cardId);
   };
 
   return (
@@ -148,7 +150,7 @@ const Card: React.FC<Props> = (props) => {
                 >
                   {/* {processor.processSync(text).contents} */}
                   {/* text */}
-                  {cardText}
+                  {text}
                 </div>
               </CardContent>
             </MaterialCard>

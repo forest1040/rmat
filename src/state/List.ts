@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-// import { createContainer } from "unstated-next";
+import { createContainer } from "unstated-next";
 import DB, { ListTable } from "../db";
 import useCardState from "./Card";
 
@@ -9,8 +9,7 @@ const useListState = () => {
   const isInitialListsMount = useRef(true);
 
   const [allLists, setAllLists] = useState<Lists>([]);
-  // const cardContainer = useCardState.useContainer();
-  const cardContainer = useCardState();
+  const cardContainer = useCardState.useContainer();
   const { allCards, onCardTableUpdateCompleted } = cardContainer;
 
   useEffect(() => {
@@ -108,5 +107,4 @@ const useListState = () => {
   };
 };
 
-//export default createContainer(useListState);
-export default useListState;
+export default createContainer(useListState);

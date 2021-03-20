@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-//import { createContainer } from "unstated-next";
+import { createContainer } from "unstated-next";
 import DB, { CardTable } from "../db";
 
 type Cards = CardTable[];
@@ -88,5 +88,4 @@ const useCardState = () => {
   };
 };
 
-// export default createContainer(useCardState);
-export default useCardState;
+export default createContainer(useCardState);

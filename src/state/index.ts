@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-// import { createContainer } from "unstated-next";
+import { createContainer } from "unstated-next";
 import { DropResult } from "react-beautiful-dnd";
 import DB, { BoardTable } from "../db";
 import useListState from "./List";
@@ -13,8 +13,7 @@ const useStore = () => {
 
   const [allBoards, setAllBoards] = useState<Boards>([]);
 
-  // const listContainer = useListState.useContainer();
-  const listContainer = useListState();
+  const listContainer = useListState.useContainer();
   const {
     allLists,
     onListAdded,
@@ -22,8 +21,7 @@ const useStore = () => {
     onListTitleChanged,
     onListTableUpdateCompleted,
   } = listContainer;
-  // const cardContainer = useCardState.useContainer();
-  const cardContainer = useCardState();
+  const cardContainer = useCardState.useContainer();
   const {
     allCards,
     onCardAdded,
@@ -396,5 +394,4 @@ const useStore = () => {
   };
 };
 
-// export default createContainer(useStore);
-export default useStore;
+export default createContainer(useStore);
