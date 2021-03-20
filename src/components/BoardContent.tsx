@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Fab } from "@material-ui/core";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -32,6 +32,8 @@ const BoardContent: React.FC = () => {
   const [lists, setLists] = useRecoilState(listState);
   const [cards, setCards] = useRecoilState(cardState);
 
+  //const [isRender, setIsRender] = useState(true);
+
   const boardIdNumber = () => {
     return parseInt("" + boardId, 10);
   };
@@ -59,6 +61,7 @@ const BoardContent: React.FC = () => {
 
   const handleDragEnded = (result: DropResult) => {
     onDragEnded(boardIdNumber(), result);
+    //setIsRender(false);
   };
 
   const onDragEnded = (boardId: number, dropResult: DropResult) => {
@@ -120,6 +123,8 @@ const BoardContent: React.FC = () => {
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
+        console.log("list.id:" + list.id);
+        console.log("listIndex:" + listIndex);
         if (!list.id) {
           return <></>;
         }
@@ -149,6 +154,7 @@ const BoardContent: React.FC = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
+              {/* {isRender ? RenderLists() : <></>} */}
               {RenderLists()}
               {provided.placeholder}
             </div>

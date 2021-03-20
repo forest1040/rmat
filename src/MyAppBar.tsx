@@ -185,14 +185,6 @@ const MyAppBar: React.FC = () => {
               <ListItemText primary="トップページ" />
             </ListItem>
           </Link>
-          <Link to="/boards" className={classes.link}>
-            <ListItem button>
-              <ListItemIcon>
-                <ShoppingCartIcon />
-              </ListItemIcon>
-              <ListItemText primary="ホードリスト" />
-            </ListItem>
-          </Link>
           <Link to="/board" className={classes.link}>
             <ListItem button>
               <ListItemIcon>

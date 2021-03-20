@@ -11,7 +11,6 @@ import green from "@material-ui/core/colors/green";
 
 import "./App.css";
 import Home from "./Home";
-import BoardList from "./BoardList";
 import Board from "./Board";
 import TextEdit from "./TextEdit";
 
@@ -52,7 +51,6 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/boards" component={BoardList} />
           <Route path="/board" component={Board} />
           <Route path="/edit" component={TextEdit} />
           <Redirect to="/" />
