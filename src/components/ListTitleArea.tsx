@@ -125,7 +125,7 @@ const ListTitleArea: React.FC<Props> = (props) => {
           <TextField
             className={classes.listTitleTextField}
             id="list-name"
-            label="Card Title"
+            label="List Title"
             value={title}
             margin="normal"
             autoFocus
