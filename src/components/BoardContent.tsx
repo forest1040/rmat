@@ -5,10 +5,10 @@ import AddIcon from "@material-ui/icons/Add";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import List from "./List";
-//import State from "../state";
 import { listState, cardState } from "../state/model";
-import DB, { ListTable, CardTable } from "../db";
-//import Lists from "../state/model";
+import DB from "../db";
+import { SwapLists, swapCards } from "../utils/swap";
+import { Lists, Cards } from "../state/model";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -29,10 +29,6 @@ const useStyles = makeStyles((theme: Theme) => {
 const boardId = 1;
 
 const BoardContent: React.FC = () => {
-  //const store = useStore();
-  //const Container = State.useContainer();
-  //const lists = useRecoilValue(listState);
-  //const cards = useRecoilValue(cardState);
   const [lists, setLists] = useRecoilState(listState);
   const [cards, setCards] = useRecoilState(cardState);
 
@@ -41,19 +37,11 @@ const BoardContent: React.FC = () => {
   };
 
   const classes = useStyles();
-  const handleDragEnded = (result: DropResult) => {
-    //Container.onDragEnded(boardIdNumber(), result);
-    //store.onDragEnded(boardId, result);
-    onDragEnded(boardIdNumber(), result);
-  };
   const handleAddButtonClicked = () => {
-    //Container.OnListAdded(boardIdNumber());
-    //store.OnListAdded(boardIdNumber());
-    OnListAdded(boardIdNumber());
+    onListAdded(boardIdNumber());
   };
 
-  const OnListAdded = (boardId: number) => {
-    //const lists = useRecoilValue(listState);
+  const onListAdded = (boardId: number) => {
     const index = lists.filter((list) => list.boardId === boardId).length;
     DB.listTable
       .add({
@@ -61,238 +49,16 @@ const BoardContent: React.FC = () => {
         index,
         title: "",
       })
-      .then(() => OnListTableUpdateCompleted(boardId))
-      .catch((err) => {
-        throw err;
-      });
-  };
-
-  const OnListTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
-    DB.listTable
-      .toArray()
-      .then((lists) => {
-        setLists(lists);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
+      .then(() => {
+        DB.listTable.toArray().then((list) => setLists(list));
       })
       .catch((err) => {
         throw err;
       });
   };
 
-  const OnCardTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
-    DB.cardTable
-      .toArray()
-      .then((cards) => {
-        setCards(cards);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
-  const SwapLists = (
-    boardId: number,
-    draglistId: number,
-    sourceIndex: number,
-    destinationIndex: number
-  ) => {
-    const lowerIndex =
-      destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
-    const upperIndex =
-      destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
-    //const lists = useRecoilValue(allLists);
-    const range = lists
-      .filter((list) => list.boardId === boardId)
-      .sort((a, b) => a.index - b.index)
-      .slice(lowerIndex, upperIndex + 1);
-    const dragList = range.find((list) => list.id === draglistId);
-
-    if (dragList) {
-      if (dragList.index === lowerIndex) {
-        range.splice(0, 1);
-        range.splice(range.length, 0, dragList);
-      } else {
-        range.splice(range.length - 1, 1);
-        range.splice(0, 0, dragList);
-      }
-
-      let indexOfRange = 0;
-      const promiseArray: Promise<number>[] = [];
-      for (let index = lowerIndex; index <= upperIndex; index += 1) {
-        range[indexOfRange].index = index;
-        const { id } = range[indexOfRange];
-        if (id) {
-          promiseArray.push(
-            DB.listTable.update(id, { index }).catch((err) => {
-              throw err;
-            })
-          );
-        }
-        indexOfRange += 1;
-      }
-
-      Promise.all(promiseArray).then(() => OnListTableUpdateCompleted(boardId));
-    }
-  };
-
-  const SwapCardsInTheSameList = (
-    boardId: number,
-    dragCardtId: number,
-    sourceIndex: number,
-    destinationId: number,
-    destinationIndex: number
-  ) => {
-    const lowerIndex =
-      destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
-    const upperIndex =
-      destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
-    //const cards = useRecoilValue(allCards);
-    const range = cards
-      .filter((card) => card.listId === destinationId)
-      .sort((a, b) => a.index - b.index)
-      .slice(lowerIndex, upperIndex + 1);
-    const dragCard = range.find((card) => card.id === dragCardtId);
-
-    if (dragCard) {
-      if (dragCard.index === lowerIndex) {
-        range.splice(0, 1);
-        range.splice(range.length, 0, dragCard);
-      } else {
-        range.splice(range.length - 1, 1);
-        range.splice(0, 0, dragCard);
-      }
-
-      let indexOfRange = 0;
-      const promiseArray: Promise<number>[] = [];
-      for (let index = lowerIndex; index <= upperIndex; index += 1) {
-        range[indexOfRange].index = index;
-        const { id } = range[indexOfRange];
-        if (id) {
-          promiseArray.push(
-            DB.cardTable.update(id, { index }).catch((err) => {
-              throw err;
-            })
-          );
-        }
-        indexOfRange += 1;
-      }
-
-      Promise.all(promiseArray).then(() => OnCardTableUpdateCompleted(boardId));
-    }
-  };
-
-  const SwapCardsInDifferentList = (
-    boardId: number,
-    dragCardtId: number,
-    sourceId: number,
-    sourceIndex: number,
-    destinationId: number,
-    destinationIndex: number
-  ) => {
-    //const cards = useRecoilValue(allCards);
-    const sourceRange = cards
-      .filter((card) => card.listId === sourceId)
-      .slice(sourceIndex);
-    const destinationRange = cards
-      .filter((card) => card.listId === destinationId)
-      .slice(destinationIndex);
-    const dragCard = cards.find((card) => card.id === dragCardtId);
-
-    if (dragCard) {
-      sourceRange.splice(0, 1);
-      destinationRange.splice(0, 0, dragCard);
-
-      let index = sourceIndex;
-      const promiseArray: Promise<number>[] = [];
-      for (
-        let indexOfRange = 0;
-        indexOfRange < sourceRange.length;
-        indexOfRange += 1
-      ) {
-        sourceRange[indexOfRange].index = index;
-        const { id } = sourceRange[indexOfRange];
-        if (id) {
-          promiseArray.push(
-            DB.cardTable.update(id, { index }).catch((err) => {
-              throw err;
-            })
-          );
-        }
-
-        index += 1;
-      }
-
-      index = destinationIndex;
-      for (
-        let indexOfRange = 0;
-        indexOfRange < destinationRange.length;
-        indexOfRange += 1
-      ) {
-        destinationRange[indexOfRange].index = index;
-        const { id } = destinationRange[indexOfRange];
-        if (id && index === destinationIndex) {
-          destinationRange[indexOfRange].listId = destinationId;
-          promiseArray.push(
-            DB.cardTable
-              .update(id, { listId: destinationId, index })
-              .catch((err) => {
-                throw err;
-              })
-          );
-        } else if (id) {
-          promiseArray.push(
-            DB.cardTable.update(id, { index }).catch((err) => {
-              throw err;
-            })
-          );
-        }
-
-        index += 1;
-      }
-
-      Promise.all(promiseArray).then(() => OnCardTableUpdateCompleted(boardId));
-    }
-  };
-
-  const swapCards = (
-    boardId: number,
-    dragCardtId: number,
-    sourceId: number,
-    sourceIndex: number,
-    destinationId: number,
-    destinationIndex: number
-  ) => {
-    if (sourceId === destinationId) {
-      SwapCardsInTheSameList(
-        boardId,
-        dragCardtId,
-        sourceIndex,
-        destinationId,
-        destinationIndex
-      );
-    } else {
-      SwapCardsInDifferentList(
-        boardId,
-        dragCardtId,
-        sourceId,
-        sourceIndex,
-        destinationId,
-        destinationIndex
-      );
-    }
+  const handleDragEnded = (result: DropResult) => {
+    onDragEnded(boardIdNumber(), result);
   };
 
   const onDragEnded = (boardId: number, dropResult: DropResult) => {
@@ -312,7 +78,8 @@ const BoardContent: React.FC = () => {
     switch (type) {
       case "List": {
         const dragListId = parseInt(draggableId.replace("listId-", ""), 10);
-        SwapLists(boardId, dragListId, source.index, destination.index);
+        SwapLists(boardId, dragListId, source.index, destination.index, lists);
+        DB.listTable.toArray().then((list) => setLists(list));
         break;
       }
       case "Card": {
@@ -331,8 +98,12 @@ const BoardContent: React.FC = () => {
           sourceId,
           source.index,
           destinationId,
-          destination.index
+          destination.index,
+          cards
         );
+        DB.cardTable.toArray().then((cards) => {
+          setCards(cards);
+        });
         break;
       }
       default:
@@ -342,9 +113,10 @@ const BoardContent: React.FC = () => {
 
   const RenderLists = () => {
     const id = boardIdNumber();
-    //const result = store.allLists
-    const lists = useRecoilValue(listState);
-    const result = lists
+    // TODO:なぜか、useRecoilValueで取り直さないとうまく描画されない。
+    //const result = lists
+    const ls = useRecoilValue(listState);
+    const result = ls
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {

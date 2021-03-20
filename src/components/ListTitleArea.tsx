@@ -65,36 +65,14 @@ const ListTitleArea: React.FC<Props> = (props) => {
   const ListTitle = list?.title || "";
   const [title, setTitle] = useState(ListTitle);
 
-  const OnListTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
-    //const setListState = useSetRecoilState(listState);
-    DB.listTable
-      .toArray()
-      .then((lists) => {
-        setLists(lists);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
   const onListTitleChanged = (
     boardId: number,
     listId: number,
     title: string
   ) => {
-    DB.listTable
-      .update(listId, { title })
-      .then(() => OnListTableUpdateCompleted(boardId))
-      .catch((err) => {
-        throw err;
-      });
+    DB.listTable.update(listId, { title }).catch((err) => {
+      throw err;
+    });
   };
 
   const handleisInputAreaChange = () => {

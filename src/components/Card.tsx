@@ -89,40 +89,23 @@ const Card: React.FC<Props> = (props) => {
     onClicked(isInputArea);
   }, [isInputArea]);
 
-  const OnCardTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
+  const onCardDeleted = (boardId: number, cardId: number) => {
     DB.cardTable
-      .toArray()
-      .then((cards) => {
-        setCards(cards);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
+      .delete(cardId)
+      .then(() => {
+        DB.cardTable.toArray().then((cards) => {
+          setCards(cards);
+        });
       })
       .catch((err) => {
         throw err;
       });
   };
 
-  const onCardDeleted = (boardId: number, cardId: number) => {
-    DB.cardTable
-      .delete(cardId)
-      .then(() => OnCardTableUpdateCompleted(boardId))
-      .catch((err) => {
-        throw err;
-      });
-  };
-
   const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
-    DB.cardTable
-      .update(cardId, { text })
-      .then(() => OnCardTableUpdateCompleted(boardId))
-      .catch((err) => {
-        throw err;
-      });
+    DB.cardTable.update(cardId, { text }).catch((err) => {
+      throw err;
+    });
   };
 
   const handleIsInputAreaChange = () => {

@@ -59,59 +59,23 @@ const List: React.FC<Props> = (props) => {
   //const cards = useRecoilValue(allCards);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
+  // useEffect(() => {
+  //   if (isInitialMount.current) {
+  //     isInitialMount.current = false;
 
-      DB.cardTable
-        .where("listId")
-        .equals(listId)
-        .sortBy("index")
-        .then((data) => setCards(data))
-        .catch((err) => {
-          throw err;
-        });
-    } else {
-      const updatedTimestamp = Date.now();
-      DB.boardTable.update(boardId, { updatedTimestamp });
-    }
-  }, [cards]);
-
-  const OnListTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
-    DB.listTable
-      .toArray()
-      .then((lists) => {
-        setLists(lists);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
-  const OnCardTableUpdateCompleted = (
-    boardId: number,
-    skipUpdatedTimestamp = false
-  ) => {
-    DB.cardTable
-      .toArray()
-      .then((cards) => {
-        setCards(cards);
-        if (!skipUpdatedTimestamp) {
-          const updatedTimestamp = Date.now();
-          DB.boardTable.update(boardId, { updatedTimestamp });
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
+  //     DB.cardTable
+  //       .where("listId")
+  //       .equals(listId)
+  //       .sortBy("index")
+  //       .then((data) => setCards(data))
+  //       .catch((err) => {
+  //         throw err;
+  //       });
+  //   } else {
+  //     const updatedTimestamp = Date.now();
+  //     DB.boardTable.update(boardId, { updatedTimestamp });
+  //   }
+  // }, [cards]);
 
   const OnCardAdded = (boardId: number, listId: number) => {
     //const cards = useRecoilValue(allCards);
@@ -131,7 +95,11 @@ const List: React.FC<Props> = (props) => {
         index: 0,
         text: "",
       })
-      .then(() => OnCardTableUpdateCompleted(boardId))
+      .then(() => {
+        DB.cardTable.toArray().then((cards) => {
+          setCards(cards);
+        });
+      })
       .catch((err) => {
         throw err;
       });
@@ -154,11 +122,14 @@ const List: React.FC<Props> = (props) => {
 
     Promise.all(cardPromiseArray)
       .then(() => {
-        OnCardTableUpdateCompleted(boardId, true);
-
+        DB.cardTable.toArray().then((cards) => {
+          setCards(cards);
+        });
         DB.listTable
           .delete(listId)
-          .then(() => OnListTableUpdateCompleted(boardId))
+          .then(() => {
+            DB.listTable.toArray().then((list) => setLists(list));
+          })
           .catch((err) => {
             throw err;
           });
