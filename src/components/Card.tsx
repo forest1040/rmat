@@ -147,7 +147,8 @@ const Card: React.FC<Props> = (props) => {
                   onClick={handleIsInputAreaChange}
                 >
                   {/* {processor.processSync(text).contents} */}
-                  {text}
+                  {/* text */}
+                  {cardText}
                 </div>
               </CardContent>
             </MaterialCard>
