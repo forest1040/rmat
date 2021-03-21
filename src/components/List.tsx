@@ -95,11 +95,11 @@ const List: React.FC<Props> = (props) => {
         index: 0,
         text: "",
       })
-      .then(() => {
-        DB.cardTable.toArray().then((cards) => {
-          setCards(cards);
-        });
-      })
+      // .then(() => {
+      //   DB.cardTable.toArray().then((cards) => {
+      //     setCards(cards);
+      //   });
+      // })
       .catch((err) => {
         throw err;
       });
@@ -156,8 +156,9 @@ const List: React.FC<Props> = (props) => {
   };
 
   const RenderCards = () => {
+    console.log("RenderCards");
     //const result = store.allCards
-    const cards = useRecoilValue(cardState);
+    //const cards = useRecoilValue(cardState);
     const result = cards
       .filter((card) => card.listId === listId)
       .sort((a, b) => a.index - b.index)

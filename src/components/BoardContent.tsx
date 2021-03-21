@@ -115,16 +115,17 @@ const BoardContent: React.FC = () => {
   };
 
   const RenderLists = () => {
+    console.log("renderLists");
     const id = boardIdNumber();
-    // TODO:なぜか、useRecoilValueで取り直さないとうまく描画されない。
-    //const result = lists
-    const ls = useRecoilValue(listState);
-    const result = ls
+    // TODO:なぜか、useRecoilValueで取り直さないとうまく描画されないことがあった？
+    const result = lists
+      // const ls = useRecoilValue(listState);
+      // const result = ls
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
-        console.log("list.id:" + list.id);
-        console.log("listIndex:" + listIndex);
+        // console.log("list.id:" + list.id);
+        // console.log("listIndex:" + listIndex);
         if (!list.id) {
           return <></>;
         }
