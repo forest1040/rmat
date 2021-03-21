@@ -12,7 +12,7 @@ import ListTitleArea from "./ListTitleArea";
 import Card from "./Card";
 //import State from "../state";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { listState, cardState } from "../state/model";
+import { Lists, Cards, listState, cardState } from "../state/model";
 import DB from "../db";
 
 interface Props {
@@ -46,36 +46,35 @@ const List: React.FC<Props> = (props) => {
   //const store = useStore();
   //const Container = State.useContainer();
 
-  const isInitialMount = useRef(true);
   const classes = useStyles();
 
   const history = useHistory();
 
   const { boardId, listId, listIndex } = props;
 
-  const [lists, setLists] = useRecoilState(listState);
-  //const [cards, setCards] = useState<CardTable[]>([]);
-  const [cards, setCards] = useRecoilState(cardState);
-  //const cards = useRecoilValue(allCards);
+  // const [lists, setLists] = useRecoilState(listState);
+  // const [cards, setCards] = useRecoilState(cardState);
+
+  //const [lists, setLists] = useState<Lists>([]);
+  const [gLists, setGLists] = useRecoilState(listState);
+  const [cards, setCards] = useState<Cards>([]);
+
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      DB.cardTable
+        .where("listId")
+        .equals(listId)
+        .sortBy("index")
+        .then((data) => setCards(data))
+        .catch((err) => {
+          throw err;
+        });
+    }
+  }, [cards]);
+
   const [isDragDisabled, setIsDragDisabled] = useState(false);
-
-  // useEffect(() => {
-  //   if (isInitialMount.current) {
-  //     isInitialMount.current = false;
-
-  //     DB.cardTable
-  //       .where("listId")
-  //       .equals(listId)
-  //       .sortBy("index")
-  //       .then((data) => setCards(data))
-  //       .catch((err) => {
-  //         throw err;
-  //       });
-  //   } else {
-  //     const updatedTimestamp = Date.now();
-  //     DB.boardTable.update(boardId, { updatedTimestamp });
-  //   }
-  // }, [cards]);
 
   const OnCardAdded = (boardId: number, listId: number) => {
     //const cards = useRecoilValue(allCards);
@@ -128,7 +127,7 @@ const List: React.FC<Props> = (props) => {
         DB.listTable
           .delete(listId)
           .then(() => {
-            DB.listTable.toArray().then((list) => setLists(list));
+            DB.listTable.toArray().then((list) => setGLists(list));
           })
           .catch((err) => {
             throw err;
@@ -170,7 +169,7 @@ const List: React.FC<Props> = (props) => {
           <Card
             key={card.id}
             boardId={boardId}
-            cardId={card.id}
+            card={card}
             cardIndex={cardIndex}
             onClicked={setIsDragDisabled}
           />

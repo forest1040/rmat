@@ -14,14 +14,15 @@ import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 //import "highlight.js/styles/default.css";
 import { useRecoilState } from "recoil";
-import DB from "../db";
+import DB, { CardTable } from "../db";
 
 //import State from "../state";
 import { cardState } from "../state/model";
 
 interface Props {
   boardId: number;
-  cardId: number;
+  //cardId: number;
+  card: CardTable;
   cardIndex: number;
   onClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -68,16 +69,16 @@ const useStyles = makeStyles((theme: Theme) => {
 const Card: React.FC<Props> = (props) => {
   //const store = useStore();
   //const Container = State.useContainer();
-  const { boardId, cardId, cardIndex } = props;
+  const { boardId, card, cardIndex } = props;
   const classes = useStyles();
 
   //const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
   //const cards = useRecoilValue(cardState);
-  const [cards, setCards] = useRecoilState(cardState);
+  const [gCards, setGCards] = useRecoilState(cardState);
 
-  const card = cards.find((cardData) => cardData.id === cardId);
+  //const card = cards.find((cardData) => cardData.id === cardId);
   //const card = store.allCards.find((cardData) => cardData.id === cardId);
   const cardText = card?.text || "";
   const [text, setValue] = useState(cardText);
@@ -94,7 +95,7 @@ const Card: React.FC<Props> = (props) => {
       .delete(cardId)
       .then(() => {
         DB.cardTable.toArray().then((cards) => {
-          setCards(cards);
+          setGCards(cards);
         });
       })
       .catch((err) => {
@@ -112,7 +113,10 @@ const Card: React.FC<Props> = (props) => {
     if (isInputArea) {
       //Container.onCardTextChanged(boardId, cardId, text);
       //store.onCardTextChanged(boardId, cardId, text);
-      onCardTextChanged(boardId, cardId, text);
+      if (card.id) {
+        const cardId = card.id;
+        onCardTextChanged(boardId, cardId, text);
+      }
     }
     setIsInputArea(!isInputArea);
   };
@@ -124,7 +128,10 @@ const Card: React.FC<Props> = (props) => {
   const handleDeleteButtonClicked = () => {
     //Container.onCardDeleted(boardId, cardId);
     //store.onCardDeleted(boardId, cardId);
-    onCardDeleted(boardId, cardId);
+    if (card.id) {
+      const cardId = card.id;
+      onCardDeleted(boardId, cardId);
+    }
   };
 
   return (
@@ -159,7 +166,7 @@ const Card: React.FC<Props> = (props) => {
           </div>
         </>
       ) : (
-        <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
+        <Draggable draggableId={`cardId-${card?.id}`} index={cardIndex}>
           {(provided) => (
             <MaterialCard
               {...provided.draggableProps}

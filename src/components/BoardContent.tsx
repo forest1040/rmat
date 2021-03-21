@@ -8,7 +8,7 @@ import List from "./List";
 import { listState, cardState } from "../state/model";
 import DB from "../db";
 import { SwapLists, swapCards } from "../utils/swap";
-import { Lists, Cards } from "../state/model";
+import { Lists, Cards, allLists, allCards } from "../state/model";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -31,8 +31,16 @@ const boardId = 1;
 const BoardContent: React.FC = () => {
   const [lists, setLists] = useRecoilState(listState);
   const [cards, setCards] = useRecoilState(cardState);
+  // const [lLists, setLists] = useState<Lists>([]);
+  // const [lCards, setCards] = useState<Cards>([]);
+
+  // const [lists, setLists] = useState(listState);
+  // const [cards, setCards] = useState(cardState);
 
   //const [isRender, setIsRender] = useState(true);
+
+  const lLists = useRecoilValue(allLists);
+  const lCards = useRecoilValue(allCards);
 
   const boardIdNumber = () => {
     return parseInt("" + boardId, 10);
@@ -118,10 +126,7 @@ const BoardContent: React.FC = () => {
   const RenderLists = () => {
     console.log("renderLists");
     const id = boardIdNumber();
-    // TODO:なぜか、useRecoilValueで取り直さないとうまく描画されないことがあった？
-    const result = lists
-      // const ls = useRecoilValue(listState);
-      // const result = ls
+    const result = lLists
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
