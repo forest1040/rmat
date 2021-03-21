@@ -46,6 +46,7 @@ const BoardContent: React.FC = () => {
   };
 
   const renderLists = () => {
+    console.log("renderLists");
     const id = boardIdNumber();
     //const result = store.allLists
     const result = Container.allLists

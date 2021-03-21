@@ -90,6 +90,7 @@ const List: React.FC<Props> = (props) => {
   };
 
   const renderCards = () => {
+    console.log("renderLists");
     //const result = store.allCards
     const result = Container.allCards
       .filter((card) => card.listId === listId)
