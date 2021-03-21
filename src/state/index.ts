@@ -56,9 +56,9 @@ const useStore = () => {
   useEffect(() => {
     if (isInitialBoardContentMount.current) {
       isInitialBoardContentMount.current = false;
+      console.log("isInitialBoardContentMount");
+      fetchAllBoards();
     }
-
-    fetchAllBoards();
   }, [allLists, allCards]);
 
   const onBoardAdded = () => {

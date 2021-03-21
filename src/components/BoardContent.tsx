@@ -28,6 +28,8 @@ const boardId = 1;
 
 const BoardContent: React.FC = () => {
   const store = useStore();
+  const lists = store.allLists;
+
   const boardIdNumber = () => {
     return parseInt("" + boardId, 10);
   };
@@ -43,13 +45,14 @@ const BoardContent: React.FC = () => {
   };
 
   const renderLists = () => {
-    //console.log("renderLists");
+    console.log("renderLists");
     const id = boardIdNumber();
-    const result = store.allLists
+    //const result = store.allLists
+    const result = lists
       .filter((list) => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
-        console.log("list.id:" + list.id);
+        //console.log("list.id:" + list.id);
         //console.log("listIndex:" + listIndex);
         if (!list.id) {
           return <></>;
