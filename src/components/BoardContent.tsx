@@ -64,6 +64,7 @@ const BoardContent: React.FC = () => {
     //setIsRender(false);
   };
 
+  //const onDragEnded = (boardId: number, dropResult: DropResult) => {};
   const onDragEnded = (boardId: number, dropResult: DropResult) => {
     const { destination, draggableId, source, type } = dropResult;
 
